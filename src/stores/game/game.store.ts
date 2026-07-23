@@ -9,9 +9,6 @@ import type { Card } from '../../types/card';
 
 import { sevenTeenRule } from "../../utils/hand.utils";
 
-
-
-
 interface GameState {
 
     computerHand: Card[],
