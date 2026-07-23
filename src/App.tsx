@@ -6,11 +6,15 @@ import { Card } from "./components/Card";
 import { useState } from "react";
 import { printGameResult } from "./utils/game-result";
 
+import { getPoints } from "./utils/hand.utils";
+
+import { fitAces3 } from "./utils/hand.utils";
+
 function App() {
 
   const [isUsed, setIsUsed] = useState(false);
-  const [isInactive, setIsInactive] = useState(false);
-  
+  const [isInactive, setIsInactive] = useState(true);
+
   const isGameOver = useHandStore( state => state.isGameOver);
   const showGameResult = useHandStore( state => state.showGameResult);
   
@@ -38,14 +42,7 @@ function App() {
   const computerPoints = useHandStore(state => state.computerPoints);
   const increaseComputerPoints = useHandStore(state => state.increaseComputerPoints);
 
-  const askForAnotherCard = () => {
-    // Gamer
-    addCardToGamerHand(card);
-    increaseGamerPoints(card);
-    updateDeck(card);
 
-    
-  }
 
   const startGame = () => {
     setIsUsed(true);
@@ -67,6 +64,7 @@ function App() {
     updateDeck(CCard2);
     increaseComputerPoints(CCard2);
 
+    setIsInactive(false);
     
   }
 
@@ -87,6 +85,16 @@ function App() {
   // Start a New Game
   const newGame = () => window.location.reload();
 
+    const askForAnotherCard = () => {
+    // Gamer
+    addCardToGamerHand(card);
+    increaseGamerPoints(card);
+    updateDeck(card);
+
+    if (getPoints(fitAces3(gamerHand)) >= 21 || getPoints(fitAces3(computerHand)) >= 21) setIsInactive(true);
+    console.log(getPoints(fitAces3(gamerHand)));
+  }
+
   return (
 <>
 
@@ -96,7 +104,6 @@ function App() {
       <h1 className="text-center text-4xl font-bold">Blackjack</h1>
     </div>
 
-  
     <div className="rounded-lg flex flex-wrap justify-center items-center p-4 gap-4">
       
       <button id="start-game" className="border rounded-lg p-3 cursor-pointer" onClick={startGame} disabled={isUsed}>Start Game</button>
@@ -106,22 +113,26 @@ function App() {
   
     </div>
 
-
     <div className="rounded-lg grid grid-cols-1 lg:grid-cols-2 grid-rows-[auto_1fr] gap-4 p-4 min-h-[650px] lg:h-[80vh]">
      
 
       <div id="game-result" className="border rounded-lg p-6 grid-cols-1 lg:col-span-2">
-        <p className="text-center font-semibold">{ (gamerPoints >= 21 || computerPoints >= 21) ? printGameResult(gamerPoints, computerPoints, gamerHand.length, computerHand.length) : isGameOver }</p>
+        <p className="text-center font-semibold">
+        { (gamerPoints >= 21 || computerPoints >= 21) ? 
+        printGameResult(gamerPoints, computerPoints, gamerHand.length, computerHand.length)         
+        : isGameOver }
+        
+        </p>
       </div>
       
       <div id="computer-frame" className="border rounded-lg p-4 grid grid-rows-6 gap-4 min-h-[300px]">
   
         <div id="gamer-board" className="border rounded-lg p-2 row-span-1 grid grid-cols-2 gap-4">
           <div  className="inner-board border rounded-lg p-2 flex items-center">
-            <p className="font-medium">Jugador</p>
+            <p className="font-medium">Player</p>
           </div>
           <div className="inner-board border rounded-lg p-2 flex items-center justify-end">
-            <p>Gamer Points: { gamerPoints }</p>
+            <p>Points: { gamerPoints }</p>
             
           </div>
         </div>
@@ -142,28 +153,20 @@ function App() {
             <p className="font-medium">Computer</p>
           </div>
           <div className="inner-board border rounded-lg p-2 flex items-center justify-end">
-            <p>Computer Points: {(isShowingFullCards || gamerPoints >= 21 || computerPoints >= 21) ? computerPoints : "¿?"}</p>
+            <p>Points: {(isShowingFullCards || gamerPoints >= 21 || computerPoints >= 21) ? computerPoints : "¿?"}</p>
           </div>
         </div>
 
-
         <div id="computer-screen" className="border rounded-lg p-4 row-span-5 flex items-center justify-left">
 
-
         { (isShowingFullCards || gamerPoints >= 21 || computerPoints >= 21) ? 
-        computerHand.map( item => <Card key={item.id} src={item.imagePath} />) : 
-        
+        computerHand.map( item => <Card key={item.id} src={item.imagePath} />) :         
         <Card key={computerHand[0]?.id} src={computerHand[0]?.imagePath} />
-        
         } 
         </div>
       </div>
 
     </div>
-
-    {/* <div className="border rounded-lg grid grid-cols-1 p-5">
-      <h1 className="text-center">Footer</h1>
-    </div> */}
   </div>
 </>
   );
