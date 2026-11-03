@@ -6,17 +6,6 @@ import { cleanDeck } from "./deck.utils";
 // Types
 import type { Card } from "../types/card";
 
-// Verifica si la MANO (JUGADOR o MAQUINA) tiene al menos un ACE
-// const hasAtLeastOneAce = (hand: Card[]) => {
-//   let count = 0;
-//   let bool = false;
-//   for (const card of hand) {
-//     if (card.name.indexOf("A") > -1) count++;
-//   }
-//   if (count > 0) bool = true;
-//   return bool;
-// };
-
 // Determina si la SUMA de la mano es mayor a 21
 const isSumGreaterThan21 = (hand: Card[]) => {
   let sum = 0;
@@ -62,14 +51,13 @@ export const getAnotherCard = (hand: Card[], deck: Card[], points: number) => {
   return { hand, points, numberOfCards };
 };
 
-  export const sevenTeenRule = (cHand: Card[], deck: Card[], cPoints: number): Card[] => {
-  while (cPoints < 17) {
+export const sevenTeenRule = (cHand: Card[], deck: Card[]) => {
+  while (getPoints(fitAces3(cHand)) < 17) {
     const card = getRandomCard(deck);
-  cHand = [...cHand, card] // cHand.push(card);
-  cPoints = getPoints(fitAces3(cHand));
+    cHand = [...cHand, card];
+    deck = cleanDeck(card, deck);
   }
-  // console.log(cHand);
-  return cHand;
+  return { computerHand: cHand, deck };
 };
 
 

@@ -2,12 +2,11 @@
 import { cards } from "../../assets/data/cardsArray";
 import { cleanDeck } from "../../utils/deck.utils";
 import { create } from 'zustand';
-import { fitAces3 } from "../../utils/hand.utils";
+import { fitAces3, sevenTeenRule } from "../../utils/hand.utils";
 import { getPoints } from '../../utils/hand.utils';
 import { printGameResult } from '../../utils/game-result';
 import type { Card } from '../../types/card';
-
-import { sevenTeenRule } from "../../utils/hand.utils";
+import { getRandomCard } from "../../utils/card.utils";
 
 interface GameState {
 
@@ -23,12 +22,13 @@ interface GameState {
     addCardToComputerHand: (newCard: Card) => void,
     addCardToGamerHand: (newCard: Card) => void,
     feedRandomCards: (newCard: Card) => void,
-    increaseComputerPoints: (newCard: Card) => void,
-    increaseGamerPoints: (newCard: Card) => void,
+    increaseComputerPoints: () => void,
+    increaseGamerPoints: () => void,
     showComputerCards:() => void,
     showGameResult:() => void,
     updateDeck: (newCard: Card) => void,
     getRandomCards: () => void,
+    dealCard: (to: 'gamer' | 'computer') => void
 }
 
 export const useHandStore = create<GameState>()((set) => ({
@@ -42,7 +42,8 @@ export const useHandStore = create<GameState>()((set) => ({
     isShowingFullCards: false,
     randomCards: [],
 
-    getRandomCards: () => set((state) => ({ computerHand: sevenTeenRule([...state.computerHand], state.deck, getPoints(fitAces3([...state.computerHand])))})),
+    getRandomCards: () => set((state) => sevenTeenRule([...state.computerHand], [...state.deck])),
+    dealCard: (to: 'gamer' | 'computer') => set((state) => { const card = getRandomCard(state.deck); const deck = cleanDeck(card, state.deck); return to === 'gamer' ? { gamerHand: [...state.gamerHand, card], deck } : { computerHand: [...state.computerHand, card], deck }; }),
     addCardToComputerHand: (newCard: Card) => set((state) => ({ computerHand: [...state.computerHand, newCard]})),
     addCardToGamerHand: (newCard: Card) => set((state) => ({ gamerHand: [...state.gamerHand, newCard] })),
     feedRandomCards : (newCard: Card) => set((state) => ({ randomCards: [...state.randomCards, newCard] })),

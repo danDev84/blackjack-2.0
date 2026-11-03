@@ -1,13 +1,10 @@
 import "./App.css";
 
 import { useHandStore } from "./stores";
-import { getRandomCard } from "./utils/card.utils";
 import { Card } from "./components/Card";
 import { useState } from "react";
 import { printGameResult } from "./utils/game-result";
 import { Button } from "./components/Button";
-import { getPoints } from "./utils/hand.utils";
-import { fitAces3 } from "./utils/hand.utils";
 
 function App() {
 
@@ -20,20 +17,22 @@ function App() {
   const isShowingFullCards = useHandStore( state => state.isShowingFullCards);
   const showComputerCards = useHandStore(state => state.showComputerCards);
 
-  const deck = useHandStore(state => state.deck);
-  const updateDeck = useHandStore(state => state.updateDeck)
+  // const deck = useHandStore(state => state.deck);
+  // const updateDeck = useHandStore(state => state.updateDeck)
 
-  const card  = getRandomCard(deck);
-  const card2 = getRandomCard(deck);
+  // const card  = getRandomCard(deck);
+  // const card2 = getRandomCard(deck);
 
-  const CCard1 = getRandomCard(deck);
-  const CCard2 = getRandomCard(deck);
+  // const CCard1 = getRandomCard(deck);
+  // const CCard2 = getRandomCard(deck);
+
+  const dealCard = useHandStore(state => state.dealCard);
 
   const gamerHand = useHandStore( state => state.gamerHand);
-  const addCardToGamerHand = useHandStore(state => state.addCardToGamerHand);
+  // const addCardToGamerHand = useHandStore(state => state.addCardToGamerHand);
  
   const computerHand = useHandStore( state => state.computerHand);
-  const addCardToComputerHand = useHandStore(state => state.addCardToComputerHand);
+  // const addCardToComputerHand = useHandStore(state => state.addCardToComputerHand);
 
   const gamerPoints = useHandStore(state => state.gamerPoints);
   const increaseGamerPoints = useHandStore(state => state.increaseGamerPoints);
@@ -41,56 +40,39 @@ function App() {
   const computerPoints = useHandStore(state => state.computerPoints);
   const increaseComputerPoints = useHandStore(state => state.increaseComputerPoints);
 
-  const startGame = () => {
-    setIsUsed(true);
-    //  Gamer
-    addCardToGamerHand(card);
-    updateDeck(card);
-    increaseGamerPoints(card);
+const startGame = () => {
+  setIsUsed(true);
+  // Gamer
+  dealCard('gamer');
+  dealCard('gamer');
+  increaseGamerPoints();
 
-    addCardToGamerHand(card2);
-    updateDeck(card2);
-    increaseGamerPoints(card2);
+  // Computer
+  dealCard('computer');
+  dealCard('computer');
+  increaseComputerPoints();
 
-    // Computer
-    addCardToComputerHand(CCard1);
-    updateDeck(CCard1);
-    increaseComputerPoints(CCard1);
-
-    addCardToComputerHand(CCard2);
-    updateDeck(CCard2);
-    increaseComputerPoints(CCard2);
-
-    setIsInactive(false);
-    
-  }
+  setIsInactive(false);
+}
 
   const getRandomCards = useHandStore( state => state.getRandomCards)
 
   // End the game
-  const stop = () => {
-    showComputerCards();
-    
-    setIsInactive(true);
-    getRandomCards();
-    increaseComputerPoints(card);
-    showGameResult();
-
-    updateDeck(card);
-  }
+const stop = () => {
+  showComputerCards();
+  setIsInactive(true);
+  getRandomCards();
+  increaseComputerPoints();
+  showGameResult();
+}
 
   // Start a New Game
   const newGame = () => window.location.reload();
 
-    const askForAnotherCard = () => {
-    // Gamer
-    addCardToGamerHand(card);
-    increaseGamerPoints(card);
-    updateDeck(card);
-
-    if (getPoints(fitAces3(gamerHand)) >= 21 || getPoints(fitAces3(computerHand)) >= 21) setIsInactive(true);
-    console.log(getPoints(fitAces3(gamerHand)));
-  }
+const askForAnotherCard = () => {
+  dealCard('gamer');
+  increaseGamerPoints();
+}
 
   return (
 <>
@@ -104,8 +86,14 @@ function App() {
     <div className="rounded-lg flex flex-wrap justify-center items-center p-4 gap-4">
       
       <Button id="start-game" onClick={startGame} disabled={isUsed}>Start Game</Button>
-      <Button id="get-card" onClick={askForAnotherCard} disabled={isInactive}>Ask for another card</Button>
-      <Button id="stop-game" onClick={stop}>Stop</Button>
+      <Button
+        id="get-card"
+        onClick={askForAnotherCard} // click --> store --> render
+        disabled={isInactive || gamerPoints >= 21 || computerPoints >= 21}
+      >
+        Ask for another card
+      </Button>
+      <Button id="stop-game" onClick={stop} disabled={isInactive || gamerPoints >= 21 || computerPoints >= 21}>Stop</Button>
       <Button id="new-game" onClick={newGame}>New Game</Button>
   
     </div>
