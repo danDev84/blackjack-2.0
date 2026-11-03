@@ -98,7 +98,7 @@ function App() {
   <div className="grid grid-cols-1 gap-4 p-4 md:p-10">
     
     <div className="rounded-lg grid grid-cols-1 p-5">
-      <h1 className="text-center text-4xl font-bold">Blackjack</h1>
+      <h1 className="text-center text-5xl font-bold">Blackjack</h1>
     </div>
 
     <div className="rounded-lg flex flex-wrap justify-center items-center p-4 gap-4">
