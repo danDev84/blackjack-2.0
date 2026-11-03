@@ -1,9 +1,7 @@
-import type { Card } from "../types/card.ts"
+import type { Card } from "../types/card";
 
-const random = (deck: Card[]) => Math.round(Math.random() * deck.length);
-const getRandomCard = (deck: Card[]) => deck[random(deck) - 1];
-
-
+const random = (deck: Card[]) => Math.floor(Math.random() * deck.length);
+const getRandomCard = (deck: Card[]) => deck[random(deck)];
 
 export {
     getRandomCard,

@@ -1,13 +1,9 @@
-
-
 interface UICard {
     src: string,
     width?: number,
     id?: number,
     key: number,
 }
-
-
 
 export const Card = (props: UICard) => {
 

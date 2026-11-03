@@ -5,9 +5,8 @@ import { getRandomCard } from "./utils/card.utils";
 import { Card } from "./components/Card";
 import { useState } from "react";
 import { printGameResult } from "./utils/game-result";
-
+import { Button } from "./components/Button";
 import { getPoints } from "./utils/hand.utils";
-
 import { fitAces3 } from "./utils/hand.utils";
 
 function App() {
@@ -41,8 +40,6 @@ function App() {
 
   const computerPoints = useHandStore(state => state.computerPoints);
   const increaseComputerPoints = useHandStore(state => state.increaseComputerPoints);
-
-
 
   const startGame = () => {
     setIsUsed(true);
@@ -106,10 +103,10 @@ function App() {
 
     <div className="rounded-lg flex flex-wrap justify-center items-center p-4 gap-4">
       
-      <button id="start-game" className="border rounded-lg p-3 cursor-pointer" onClick={startGame} disabled={isUsed}>Start Game</button>
-      <button id="get-card" className="border rounded-lg p-3 cursor-pointer" onClick={askForAnotherCard} disabled={isInactive}>Ask for another card</button>
-      <button id="stop-game" className="border rounded-lg p-3 cursor-pointer" onClick={stop}>Stop</button>
-      <button id="new-game" className="border rounded-lg p-3 cursor-pointer" onClick={newGame} >New Game</button>
+      <Button id="start-game" onClick={startGame} disabled={isUsed}>Start Game</Button>
+      <Button id="get-card" onClick={askForAnotherCard} disabled={isInactive}>Ask for another card</Button>
+      <Button id="stop-game" onClick={stop}>Stop</Button>
+      <Button id="new-game" onClick={newGame}>New Game</Button>
   
     </div>
 
